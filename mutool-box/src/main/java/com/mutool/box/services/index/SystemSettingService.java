@@ -1,6 +1,5 @@
 package com.mutool.box.services.index;
 
-import com.mutool.box.Main;
 import com.mutool.box.controller.index.SystemSettingController;
 import com.xwintop.xcore.javafx.FxApp;
 import com.xwintop.xcore.javafx.dialog.FxDialog;
@@ -24,7 +23,6 @@ public class SystemSettingService {
     public static void openSystemSettings(String title) {
 
         FxDialog<SystemSettingController> dialog = new FxDialog<SystemSettingController>()
-            .setResourceBundle(Main.RESOURCE_BUNDLE)
             .setTitle(title)
             .setBodyFxml("/fxmlView/index/SystemSetting.fxml")
             .setOwner(FxApp.primaryStage)

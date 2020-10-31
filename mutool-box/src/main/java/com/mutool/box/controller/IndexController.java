@@ -2,27 +2,34 @@ package com.mutool.box.controller;
 
 import com.mutool.box.controller.index.PluginManageController;
 import com.mutool.box.model.ToolFxmlLoaderConfiguration;
-import com.mutool.box.plugin.PluginManager;
 import com.mutool.box.services.IndexService;
 import com.mutool.box.services.index.PluginManageService;
 import com.mutool.box.services.index.SystemSettingService;
 import com.mutool.box.utils.Config;
+import com.mutool.box.utils.SpringUtil;
+import com.mutool.box.utils.XJavaFxSystemUtil;
 import com.mutool.box.view.IndexView;
 import com.xwintop.xcore.util.ConfigureUtil;
 import com.xwintop.xcore.util.HttpClientUtil;
 import com.xwintop.xcore.util.javafx.AlertUtil;
 import com.xwintop.xcore.util.javafx.JavaFxSystemUtil;
 import com.xwintop.xcore.util.javafx.JavaFxViewUtil;
+import de.felixroske.jfxsupport.AbstractFxmlView;
+import de.felixroske.jfxsupport.FXMLController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -41,8 +48,8 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import static com.mutool.box.Main.RESOURCE_BUNDLE;
 import static com.mutool.box.utils.Config.Keys.NotepadEnabled;
+import static com.xwintop.xcore.util.javafx.JavaFxViewUtil.setControllerOnCloseRequest;
 
 /**
  * @ClassName: IndexController
@@ -50,38 +57,28 @@ import static com.mutool.box.utils.Config.Keys.NotepadEnabled;
  * @author: xufeng
  * @date: 2017年7月20日 下午1:50:00
  */
+@FXMLController
 @Slf4j
 @Getter
 @Setter
 public class IndexController extends IndexView {
-
     public static final String QQ_URL = "https://support.qq.com/product/127577";
-
     public static final String STATISTICS_URL = "https://xwintop.gitee.io/maven/tongji/xJavaFxTool.html";
 
-    private Map<String, Menu> menuMap = new HashMap<>();
-
-    private Map<String, MenuItem> menuItemMap = new HashMap<>();
-
+    private Map<String, Menu> menuMap = new HashMap<String, Menu>();
+    private Map<String, MenuItem> menuItemMap = new HashMap<String, MenuItem>();
     private IndexService indexService = new IndexService(this);
-
     private ContextMenu contextMenu = new ContextMenu();
-
-    public static FXMLLoader getFXMLLoader() {
-        URL url = Object.class.getResource("/fxmlView/Index.fxml");
-        return new FXMLLoader(url, RESOURCE_BUNDLE);
-    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         this.bundle = resources;
-
         initView();
         initEvent();
         initService();
-        initNotepad();
 
-        this.indexService.addWebView(RESOURCE_BUNDLE.getString("feedback"), QQ_URL, null);
+        initNotepad();
+        this.indexService.addWebView("欢迎吐槽", QQ_URL, null);
         this.tongjiWebView.getEngine().load(STATISTICS_URL);
     }
 
@@ -122,6 +119,7 @@ public class IndexController extends IndexView {
     }
 
     public void addToolMenu(File file) throws Exception {
+        XJavaFxSystemUtil.addJarClass(file);
         Map<String, ToolFxmlLoaderConfiguration> toolMap = new HashMap<>();
         List<ToolFxmlLoaderConfiguration> toolList = new ArrayList<>();
 
@@ -235,18 +233,18 @@ public class IndexController extends IndexView {
     }
 
     @FXML
-    private void exitAction() {
+    private void exitAction(ActionEvent event) {
         Platform.exit();
         System.exit(0);
     }
 
     @FXML
-    private void closeAllTabAction() {
+    private void closeAllTabAction(ActionEvent event) {
         tabPaneMain.getTabs().clear();
     }
 
     @FXML
-    private void openAllTabAction() {
+    private void openAllTabAction(ActionEvent event) {
         for (MenuItem value : menuItemMap.values()) {
             value.fire();
         }
@@ -267,15 +265,44 @@ public class IndexController extends IndexView {
         FXMLLoader fXMLLoader = PluginManageController.getFXMLLoader();
         Parent root = fXMLLoader.load();
         PluginManageController pluginManageController = fXMLLoader.getController();
-        pluginManageController.setOnPluginDownloaded(jarFile -> {
-            try {
-                this.addToolMenu(jarFile);
-                PluginManager.getInstance().loadLocalPlugins();
-            } catch (Exception e) {
-                log.error("加载工具出错：", e);
-            }
-        });
+        pluginManageController.setIndexController(this);
         JavaFxViewUtil.openNewWindow(bundle.getString("plugin_manage"), root);
+    }
+
+    /**
+     * @Title: addContent
+     * @Description: 添加Content内容
+     */
+    private void addContent(String title, String className, String iconPath) {
+        try {
+//			Class<AbstractFxmlView> viewClass = (Class<AbstractFxmlView>) ClassLoader.getSystemClassLoader().loadClass(className);
+            Class<AbstractFxmlView> viewClass = (Class<AbstractFxmlView>) Thread.currentThread().getContextClassLoader().loadClass(className);
+            AbstractFxmlView fxmlView = SpringUtil.getBean(viewClass);
+            if (singleWindowBootCheckBox.isSelected()) {
+//				Main.showView(viewClass, Modality.NONE);
+                Stage newStage = JavaFxViewUtil.getNewStage(title, iconPath, fxmlView.getView());
+                newStage.setOnCloseRequest((WindowEvent event) -> {
+                    setControllerOnCloseRequest(fxmlView.getPresenter(), event);
+                });
+                return;
+            }
+            Tab tab = new Tab(title);
+            tab.setContent(fxmlView.getView());
+
+            if (StringUtils.isNotEmpty(iconPath)) {
+                ImageView imageView = new ImageView(new Image(iconPath));
+                imageView.setFitHeight(18);
+                imageView.setFitWidth(18);
+                tab.setGraphic(imageView);
+            }
+            tabPaneMain.getTabs().add(tab);
+            tabPaneMain.getSelectionModel().select(tab);
+            tab.setOnCloseRequest((Event event) -> {
+                setControllerOnCloseRequest(fxmlView.getPresenter(), event);
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -284,7 +311,7 @@ public class IndexController extends IndexView {
     }
 
     @FXML
-    private void aboutAction() {
+    private void aboutAction(ActionEvent event) throws Exception {
         AlertUtil.showInfoAlert(bundle.getString("aboutText") + Config.xJavaFxToolVersions);
     }
 
@@ -317,7 +344,7 @@ public class IndexController extends IndexView {
 
     @FXML
     private void xwintopLinkOnAction() throws Exception {
-        HttpClientUtil.openBrowseURLThrowsException("https://gitee.com/xwintop/xJavaFxTool");
+        HttpClientUtil.openBrowseURLThrowsException("https://gitee.com/xwintop/xJavaFxTool-spring");
     }
 
     @FXML

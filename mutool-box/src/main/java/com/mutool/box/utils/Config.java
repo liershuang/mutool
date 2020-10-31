@@ -7,70 +7,68 @@ import java.io.File;
 import java.util.Locale;
 
 /*
- * 存取框架配置
+ * 配置文件
  */
 public class Config {
+	public static Locale defaultLocale = Locale.getDefault();// 设置系统语言
 
-    public static final String CONFIG_FILE_NAME = "systemConfigure.properties";
+	public static final String xJavaFxToolVersions = "V0.2.0";// xJavaFxTool版本信息
+	public static final int xJavaFxToolVersionsInteger = 6;// xJavaFxTool更新信息
 
-    public static Locale defaultLocale = Locale.getDefault();// 设置系统语言
+	public static final String CONFIG_FILE_NAME = "systemConfigure.properties";
 
-    public static final String xJavaFxToolVersions = "V0.2.3";// xJavaFxTool版本信息
+	public enum Keys {
+		MainWindowWidth, MainWindowHeight, MainWindowTop, MainWindowLeft,
+		Locale, NotepadEnabled, RememberWindowLocation, ConfirmExit,
+		NewLauncher
+	}
 
-    ///////////////////////////////////////////////////////////////
+	private static PropertiesConfiguration conf;
 
-    public enum Keys {
-        MainWindowWidth, MainWindowHeight, MainWindowTop, MainWindowLeft,
-        Locale, NotepadEnabled, RememberWindowLocation, ConfirmExit,
-        NewLauncher
-    }
+	public static PropertiesConfiguration getConfig() {
+		try {
+			if (conf == null) {
+				File file = ConfigureUtil.getConfigureFile(CONFIG_FILE_NAME);
+				conf = new PropertiesConfiguration(file);
+				conf.setAutoSave(true); // 启用自动保存
+			} else {
+				conf.reload();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 
-    private static PropertiesConfiguration conf;
+			// 即使加载失败，也要返回一个内存中的 PropertiesConfiguration 对象，以免程序报错。
+			conf = new PropertiesConfiguration();
+		}
 
-    public static PropertiesConfiguration getConfig() {
-        try {
-            if (conf == null) {
-                File file = ConfigureUtil.getConfigureFile(CONFIG_FILE_NAME);
-                conf = new PropertiesConfiguration(file);
-                conf.setAutoSave(true); // 启用自动保存
-            } else {
-                conf.reload();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+		return conf;
+	}
 
-            // 即使加载失败，也要返回一个内存中的 PropertiesConfiguration 对象，以免程序报错。
-            conf = new PropertiesConfiguration();
-        }
+	/**
+	 * 修改配置，修改后的值将会自动保存
+	 */
+	public static void set(Keys key, Object value) {
+		getConfig().setProperty(key.name(), value);
+	}
 
-        return conf;
-    }
+	public static String get(Keys key, String def) {
+		Object value = getConfig().getProperty(key.name());
+		return value == null ? def : value.toString();
+	}
 
-    /**
-     * 修改配置，修改后的值将会自动保存
-     */
-    public static void set(Keys key, Object value) {
-        getConfig().setProperty(key.name(), value);
-    }
+	public static int getInt(Keys key, int def) {
+		return Integer.parseInt(get(key, String.valueOf(def)));
+	}
 
-    public static String get(Keys key, String def) {
-        Object value = getConfig().getProperty(key.name());
-        return value == null ? def : value.toString();
-    }
+	public static double getDouble(Keys key, double def) {
+		return Double.parseDouble(get(key, String.valueOf(def)));
+	}
 
-    public static int getInt(Keys key, int def) {
-        return Integer.parseInt(get(key, String.valueOf(def)));
-    }
+	public static long getLong(Keys key, long def) {
+		return Long.parseLong(get(key, String.valueOf(def)));
+	}
 
-    public static double getDouble(Keys key, double def) {
-        return Double.parseDouble(get(key, String.valueOf(def)));
-    }
-
-    public static long getLong(Keys key, long def) {
-        return Long.parseLong(get(key, String.valueOf(def)));
-    }
-
-    public static boolean getBoolean(Keys key, boolean def) {
-        return Boolean.parseBoolean(get(key, String.valueOf(def)));
-    }
+	public static boolean getBoolean(Keys key, boolean def) {
+		return Boolean.parseBoolean(get(key, String.valueOf(def)));
+	}
 }

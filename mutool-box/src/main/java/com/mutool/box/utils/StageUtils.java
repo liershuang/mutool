@@ -30,7 +30,7 @@ public class StageUtils {
 
         ExtUser32 INSTANCE = (ExtUser32) Native.loadLibrary("user32", ExtUser32.class, W32APIOptions.DEFAULT_OPTIONS);
 
-        WinDef.LRESULT CallWindowProcW(Pointer lpWndProc, Pointer hWnd, int msg, WinDef.WPARAM wParam, WinDef.LPARAM lParam);
+        LRESULT CallWindowProcW(Pointer lpWndProc, Pointer hWnd, int msg, WPARAM wParam, LPARAM lParam);
 
         int SetWindowLong(HWND hWnd, int nIndex, com.sun.jna.Callback wndProc) throws LastErrorException;
     }

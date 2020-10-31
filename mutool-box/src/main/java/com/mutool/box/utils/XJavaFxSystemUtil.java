@@ -1,6 +1,5 @@
 package com.mutool.box.utils;
 
-import com.mutool.box.Main;
 import com.mutool.box.plugin.PluginManager;
 import com.mutool.box.services.index.PluginManageService;
 import lombok.extern.slf4j.Slf4j;
@@ -11,7 +10,6 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * @ClassName: XJavaFxSystemUtil
@@ -29,13 +27,10 @@ public class XJavaFxSystemUtil {
     public static void initSystemLocal() {
         try {
             String localeString = Config.get(Config.Keys.Locale, "");
-
             if (StringUtils.isNotEmpty(localeString)) {
                 String[] locale1 = localeString.split("_");
                 Config.defaultLocale = new Locale(locale1[0], locale1[1]);
             }
-
-            Main.RESOURCE_BUNDLE = ResourceBundle.getBundle("locale.Menu", Config.defaultLocale);
         } catch (Exception e) {
             log.error("初始化本地语言失败", e);
         }
@@ -47,6 +42,7 @@ public class XJavaFxSystemUtil {
      * @Description: 添加libs中jar包到系统中
      */
     public static void addJarByLibs() {
+        PluginManager.getInstance().loadLocalPlugins();
         try {
             // 系统类库路径
             File libPath = new File("libs/");
@@ -62,7 +58,6 @@ public class XJavaFxSystemUtil {
                     addJarClass(file);
                 }
             }
-            PluginManager.getInstance().loadLocalPlugins();
         } catch (Exception e) {
             log.error("添加libs中jar包到系统中异常:", e);
         }
@@ -74,7 +69,6 @@ public class XJavaFxSystemUtil {
      */
     public static void addJarClass(File jarFile) {
         try {
-            log.info("Reading lib file: " + jarFile.getName());
             Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true); // 设置方法的访问权限
             // 获取系统类加载器

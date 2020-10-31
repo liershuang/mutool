@@ -1,42 +1,32 @@
 package com.mutool.box.controller.index;
 
 import com.mutool.box.controller.IndexController;
-import com.mutool.box.event.AppEvents;
-import com.mutool.box.event.PluginEvent;
-import com.mutool.box.model.PluginJarInfo;
-import com.mutool.box.plugin.AddPluginResult;
-import com.mutool.box.plugin.PluginClassLoader;
 import com.mutool.box.plugin.PluginManager;
-import com.mutool.box.plugin.PluginParser;
 import com.mutool.box.services.index.PluginManageService;
 import com.mutool.box.view.index.PluginManageView;
-import com.xwintop.xcore.util.javafx.FileChooserUtil;
 import com.xwintop.xcore.util.javafx.JavaFxViewUtil;
 import com.xwintop.xcore.util.javafx.TooltipUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
-import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.stage.Window;
 import javafx.util.Callback;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.function.Consumer;
 
 /**
- * 插件管理
- *
- * @author xufeng
- * @since 2020/1/19 17:41
+ * @ClassName: PluginManageController
+ * @Description: 插件管理
+ * @author: xufeng
+ * @date: 2020/1/19 17:41
  */
 
 @Getter
@@ -52,6 +42,8 @@ public class PluginManageController extends PluginManageView {
 
     private FilteredList<Map<String, String>> pluginDataTableData = new FilteredList<>(originPluginData, m -> true);
 
+    private IndexController indexController;
+
     public static FXMLLoader getFXMLLoader() {
         return new FXMLLoader(IndexController.class.getResource(FXML));
     }
@@ -63,24 +55,15 @@ public class PluginManageController extends PluginManageView {
         initService();
     }
 
-    public Window getWindow() {
-        return this.pluginDataTableView.getScene().getWindow();
-    }
-
-    public void setOnPluginDownloaded(Consumer<File> onPluginDownloaded) {
-        this.pluginManageService.setOnPluginDownloaded(onPluginDownloaded);
-    }
-
     private void initView() {
-        addLocalPluginButton.setVisible(Boolean.parseBoolean(System.getProperty("localPluginEnabled", "false")));
-
         JavaFxViewUtil.setTableColumnMapValueFactory(nameTableColumn, "nameTableColumn");
         JavaFxViewUtil.setTableColumnMapValueFactory(synopsisTableColumn, "synopsisTableColumn");
         JavaFxViewUtil.setTableColumnMapValueFactory(versionTableColumn, "versionTableColumn");
         JavaFxViewUtil.setTableColumnMapValueFactory(isDownloadTableColumn, "isDownloadTableColumn");
         JavaFxViewUtil.setTableColumnMapAsCheckBoxValueFactory(isEnableTableColumn, "isEnableTableColumn",
-            (mouseEvent, index) -> pluginManageService.setIsEnableTableColumn(index)
-        );
+            (mouseEvent, index) -> {
+                pluginManageService.setIsEnableTableColumn(index);
+            });
 
         // TODO 实现插件的启用禁用
 
@@ -101,7 +84,20 @@ public class PluginManageController extends PluginManageView {
                                     downloadButton.setDisable(true);
                                 }
                                 this.setContentDisplay(ContentDisplay.CENTER);
-                                downloadButton.setOnMouseClicked(event -> downloadPlugin(dataRow, downloadButton));
+                                downloadButton.setOnMouseClicked((me) -> {
+                                    try {
+                                        pluginManageService.downloadPluginJar(dataRow);
+                                        dataRow.put("isEnableTableColumn", "true");
+                                        dataRow.put("isDownloadTableColumn", "已下载");
+                                        downloadButton.setText("已下载");
+                                        downloadButton.setDisable(true);
+                                        pluginDataTableView.refresh();
+                                        TooltipUtil.showToast("插件 " + dataRow.get("nameTableColumn") + " 下载完成");
+                                    } catch (Exception e) {
+                                        log.error("下载插件失败：", e);
+                                        TooltipUtil.showToast("下载插件失败：" + e.getMessage());
+                                    }
+                                });
                                 this.setGraphic(downloadButton);
                             }
                         }
@@ -110,36 +106,6 @@ public class PluginManageController extends PluginManageView {
             });
 
         pluginDataTableView.setItems(pluginDataTableData);
-    }
-
-    private void downloadPlugin(Map<String, String> dataRow, Button downloadButton) {
-        try {
-            PluginJarInfo pluginJarInfo = pluginManageService.downloadPluginJar(dataRow);
-            afterDownload(dataRow, downloadButton, pluginJarInfo);
-        } catch (Exception e) {
-            log.error("下载插件失败：", e);
-            TooltipUtil.showToast("下载插件失败：" + e.getMessage());
-        }
-    }
-
-    private void afterDownload(
-        Map<String, String> dataRow, Button downloadButton, PluginJarInfo pluginJarInfo
-    ) throws IOException {
-
-        dataRow.put("isEnableTableColumn", "true");
-        dataRow.put("isDownloadTableColumn", "已下载");
-
-        downloadButton.setText("已下载");
-        downloadButton.setDisable(true);
-
-        pluginDataTableView.refresh();
-        PluginManager.getInstance().saveToFile();
-        TooltipUtil.showToast("插件 " + dataRow.get("nameTableColumn") + " 下载完成");
-
-        PluginClassLoader tempClassLoader = new PluginClassLoader(pluginJarInfo.getFile());
-        PluginParser.parse(pluginJarInfo.getFile(), pluginJarInfo, tempClassLoader);
-
-        AppEvents.fire(new PluginEvent(PluginEvent.PLUGIN_DOWNLOADED, pluginJarInfo));
     }
 
     private void initEvent() {
@@ -168,18 +134,8 @@ public class PluginManageController extends PluginManageView {
         pluginManageService.getPluginList();
     }
 
-    public void searchPlugin() {
+    @FXML
+    private void selectPluginAction(ActionEvent event) {
         pluginManageService.searchPlugin(selectPluginTextField.getText());
-    }
-
-    public void addLocalPlugin() {
-        File jarFile = FileChooserUtil.chooseFile(new ExtensionFilter("打包插件(*.jar)", "*.jar"));
-        if (jarFile != null) {
-            AddPluginResult result = PluginManager.getInstance().addPluginJar(jarFile);
-            if (result.isNewPlugin()) {
-                pluginManageService.addDataRow(result.getPluginJarInfo());
-            }
-            AppEvents.fire(new PluginEvent(PluginEvent.PLUGIN_DOWNLOADED, result.getPluginJarInfo()));
-        }
     }
 }

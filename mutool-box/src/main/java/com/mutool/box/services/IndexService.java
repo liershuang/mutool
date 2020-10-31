@@ -4,14 +4,11 @@ import com.mutool.box.common.logback.ConsoleLogAppender;
 import com.mutool.box.controller.IndexController;
 import com.mutool.box.model.PluginJarInfo;
 import com.mutool.box.plugin.PluginLoader;
-import com.mutool.box.plugin.PluginManager;
 import com.mutool.box.utils.Config;
-import com.mutool.box.utils.FxmlUtils;
 import com.xwintop.xcore.javafx.dialog.FxAlerts;
 import com.xwintop.xcore.util.javafx.JavaFxViewUtil;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.scene.Parent;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
@@ -29,7 +26,6 @@ import java.util.Locale;
 
 @Setter
 public class IndexService {
-
     private IndexController indexController;
 
     public IndexService(IndexController indexController) {
@@ -42,7 +38,6 @@ public class IndexService {
         } else if ("English".equals(languageType)) {
             Config.set(Config.Keys.Locale, Locale.US);
         }
-
         FxAlerts.info("", indexController.getBundle().getString("SetLanguageText"));
     }
 
@@ -62,7 +57,8 @@ public class IndexService {
     }
 
     public void addNodepadAction(ActionEvent event) {
-        Parent notepad = FxmlUtils.load("/fxmlView/notepad.fxml");
+        TextArea notepad = new TextArea();
+        notepad.setFocusTraversable(true);
         if (indexController.getSingleWindowBootCheckBox().isSelected()) {
             JavaFxViewUtil.getNewStage(indexController.getBundle().getString("addNodepad"), null, notepad);
         } else {
@@ -80,8 +76,7 @@ public class IndexService {
         textArea.setFocusTraversable(true);
         ConsoleLogAppender.textAreaList.add(textArea);
         if (indexController.getSingleWindowBootCheckBox().isSelected()) {
-            Stage newStage = JavaFxViewUtil
-                .getNewStage(indexController.getBundle().getString("addLogConsole"), null, textArea);
+            Stage newStage = JavaFxViewUtil.getNewStage(indexController.getBundle().getString("addLogConsole"), null, textArea);
             newStage.setOnCloseRequest(event1 -> {
                 ConsoleLogAppender.textAreaList.remove(textArea);
             });
@@ -99,20 +94,21 @@ public class IndexService {
     }
 
     /**
-     * 添加Content内容
+     * @Title: addContent
+     * @Description: 添加Content内容
      */
-    public void addContent(String title, String fxmlPath, String resourceBundleName, String iconPath) {
+    public void addContent(String title, String url, String resourceBundleName, String iconPath) {
 
-        PluginJarInfo pluginJarInfo = PluginManager.getInstance().getPluginByFxmlPath(fxmlPath);
-        if (pluginJarInfo == null) {
-            FxAlerts.error("打开失败", "没有找到指定的插件");
-            return;
-        }
+        PluginJarInfo plugin = new PluginJarInfo();
+        plugin.setTitle(title);
+        plugin.setFxmlPath(url);
+        plugin.setBundleName(resourceBundleName);
+        plugin.setIconPath(iconPath);
 
         if (indexController.getSingleWindowBootCheckBox().isSelected()) {
-            PluginLoader.loadPluginAsWindow(pluginJarInfo);
+            PluginLoader.loadPluginAsWindow(plugin);
         } else {
-            PluginLoader.loadPluginAsTab(pluginJarInfo, indexController.getTabPaneMain());
+            PluginLoader.loadPluginAsTab(plugin, indexController.getTabPaneMain());
         }
     }
 

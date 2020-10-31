@@ -1,11 +1,8 @@
 package com.mutool.box.services.index;
 
-import com.mutool.box.AppException;
 import com.mutool.box.controller.index.PluginManageController;
 import com.mutool.box.model.PluginJarInfo;
 import com.mutool.box.plugin.PluginManager;
-import com.xwintop.xcore.javafx.dialog.FxProgressDialog;
-import com.xwintop.xcore.javafx.dialog.ProgressTask;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,15 +11,16 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.apache.commons.lang3.StringUtils.substringBeforeLast;
 
 /**
- * 插件管理
- *
- * @author xufeng
+ * @ClassName: PluginManageService
+ * @Description: 插件管理
+ * @author: xufeng
+ * @date: 2020/1/19 17:41
  */
+
 @Getter
 @Setter
 @Slf4j
@@ -36,8 +34,6 @@ public class PluginManageService {
 
     private PluginManager pluginManager = PluginManager.getInstance();
 
-    private Consumer<File> onPluginDownloaded;
-
     public PluginManageService(PluginManageController pluginManageController) {
         this.pluginManageController = pluginManageController;
     }
@@ -47,7 +43,7 @@ public class PluginManageService {
         pluginManager.getPluginList().forEach(this::addDataRow);
     }
 
-    public void addDataRow(PluginJarInfo plugin) {
+    private void addDataRow(PluginJarInfo plugin) {
 
         Map<String, String> dataRow = new HashMap<>();
         dataRow.put("nameTableColumn", plugin.getName());
@@ -73,33 +69,20 @@ public class PluginManageService {
         pluginManageController.getOriginPluginData().add(dataRow);
     }
 
-    public PluginJarInfo downloadPluginJar(Map<String, String> dataRow) throws Exception {
+    public void downloadPluginJar(Map<String, String> dataRow) throws Exception {
+        PluginJarInfo pluginJarInfo = new PluginJarInfo();
+        pluginJarInfo.setName(dataRow.get("nameTableColumn"));
+        pluginJarInfo.setSynopsis(dataRow.get("synopsisTableColumn"));
+        pluginJarInfo.setVersion(dataRow.get("versionTableColumn"));
+        pluginJarInfo.setVersionNumber(Integer.parseInt(dataRow.get("versionNumber")));
+        pluginJarInfo.setDownloadUrl(dataRow.get("downloadUrl"));
+        pluginJarInfo.setJarName(dataRow.get("jarName"));
+        pluginJarInfo.setIsDownload(true);
+        pluginJarInfo.setIsEnable(true);
 
-        String jarName = dataRow.get("jarName");
-        PluginJarInfo pluginJarInfo = pluginManager.getPlugin(jarName);
+        File file = pluginManager.downloadPlugin(pluginJarInfo);
 
-        ProgressTask progressTask = new ProgressTask() {
-            @Override
-            protected void execute() throws Exception {
-                File file = pluginManager.downloadPlugin(
-                    pluginJarInfo, (total, current) -> updateProgress(current, total)
-                );
-
-                if (onPluginDownloaded != null) {
-                    onPluginDownloaded.accept(file);
-                }
-            }
-        };
-
-        progressTask.setOnCancelled(event -> {
-            throw new AppException("下载被取消。");
-        });
-
-        FxProgressDialog
-            .create(pluginManageController.getWindow(), progressTask, "正在下载插件 " + pluginJarInfo.getName() + "...")
-            .showAndWait();
-
-        return pluginJarInfo;
+        pluginManageController.getIndexController().addToolMenu(file);
     }
 
     public void setIsEnableTableColumn(Integer index) {

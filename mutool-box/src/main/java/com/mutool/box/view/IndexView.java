@@ -12,7 +12,6 @@ import java.util.ResourceBundle;
 @Getter
 @Setter
 public abstract class IndexView implements Initializable {
-
     protected ResourceBundle bundle;
 
     @FXML
@@ -38,6 +37,9 @@ public abstract class IndexView implements Initializable {
 
     @FXML
     protected Menu moreToolsMenu;
+
+    @FXML
+    protected Menu netWorkToolsMenu;
 
     @FXML
     protected Menu helpMenu;
