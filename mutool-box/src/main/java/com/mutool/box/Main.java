@@ -1,25 +1,22 @@
 package com.mutool.box;
 
-import com.jfoenix.controls.JFXDecorator;
-import com.mutool.box.controller.IndexController;
-import com.mutool.box.utils.Config;
-import com.mutool.box.utils.Config.Keys;
+import com.mutool.box.fxmlView.IndexView;
 import com.mutool.box.utils.StageUtils;
 import com.mutool.box.utils.XJavaFxSystemUtil;
-import com.xwintop.xcore.javafx.FxApp;
-import com.xwintop.xcore.javafx.dialog.FxAlerts;
+import com.xwintop.xcore.util.javafx.AlertUtil;
 import com.xwintop.xcore.util.javafx.JavaFxViewUtil;
-import javafx.application.Application;
+import de.felixroske.jfxsupport.AbstractJavaFxApplicationSupport;
+import de.felixroske.jfxsupport.GUIState;
+import de.felixroske.jfxsupport.SplashScreen;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
-import java.util.ResourceBundle;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
 /**
  * @ClassName: Main
@@ -27,95 +24,42 @@ import java.util.ResourceBundle;
  * @author: xufeng
  * @date: 2017年11月10日 下午4:34:11
  */
+@SpringBootApplication
 @Slf4j
-public class Main extends Application {
-
-    public static final String LOGO_PATH = "/images/icon.jpg";
-
-    public static ResourceBundle RESOURCE_BUNDLE;
-
-    private static Stage stage;
+public class Main extends AbstractJavaFxApplicationSupport {
 
     public static void main(String[] args) {
+        XJavaFxSystemUtil.initSystemLocal();//初始化本地语言
+        XJavaFxSystemUtil.addJarByLibs();//添加外部jar包
 
-        XJavaFxSystemUtil.initSystemLocal();    // 初始化本地语言
-        XJavaFxSystemUtil.addJarByLibs();       // 添加外部jar包
-
-        launch(args);
+        SplashScreen splashScreen = new SplashScreen() {
+            @Override
+            public String getImagePath() {
+                return "/images/javafx.png";
+            }
+        };
+        launch(Main.class, IndexView.class, splashScreen, args);
+//		launchApp(Main.class, IndexView.class, args);
     }
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        stage = primaryStage;
-
-        // 初始化 JavaFX 全局设置
-        FxApp.init(primaryStage, LOGO_PATH);
-        FxApp.setupIcon(primaryStage);
-        FxApp.styleSheets.add(Main.class.getResource("/css/jfoenix-main.css").toExternalForm());
-
-        primaryStage.setResizable(true);
-        primaryStage.setTitle(RESOURCE_BUNDLE.getString("Title") + Config.xJavaFxToolVersions);
-        primaryStage.setOnCloseRequest(this::confirmExit);
-
-        if (Config.getBoolean(Keys.NewLauncher, false)) {
-            loadNewUI(primaryStage);
-        } else {
-            loadClassicUI(primaryStage);
-        }
-
-        StageUtils.loadPrimaryStageBound(primaryStage);
-        primaryStage.show();
-        StageUtils.updateStageStyle(primaryStage);
-    }
-
-    private void loadNewUI(Stage primaryStage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(Main.class.getResource("/fxmlView/newui/main.fxml"));
-        fxmlLoader.setResources(RESOURCE_BUNDLE);
-
-        Parent root = fxmlLoader.load();
-        primaryStage.setScene(new Scene(root));
-    }
-
-    private void loadClassicUI(Stage primaryStage) throws IOException {
-        FXMLLoader fXMLLoader = IndexController.getFXMLLoader();
-        Parent root = fXMLLoader.load();
-
-        JFXDecorator decorator = JavaFxViewUtil.getJFXDecorator(
-            primaryStage,
-            RESOURCE_BUNDLE.getString("Title") + Config.xJavaFxToolVersions,
-            LOGO_PATH,
-            root
-        );
-        decorator.setOnCloseButtonAction(() -> confirmExit(null));
-
-        Scene scene = JavaFxViewUtil.getJFXDecoratorScene(decorator);
-        primaryStage.setScene(scene);
-    }
-
-    private void confirmExit(Event event) {
-        if (Config.getBoolean(Keys.ConfirmExit, true)) {
-            if (FxAlerts.confirmYesNo("退出应用", "确定要退出吗？")) {
-                doExit();
-            } else if (event != null) {
-                event.consume();
+    public void beforeInitialView(Stage stage, ConfigurableApplicationContext ctx) {
+        super.beforeInitialView(stage, ctx);
+        Scene scene = JavaFxViewUtil.getJFXDecoratorScene(stage, "", null, new AnchorPane());
+        stage.setScene(scene);
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                if (AlertUtil.showConfirmAlert("确定要退出吗？")) {
+                    System.exit(0);
+                } else {
+                    event.consume();
+                }
             }
-        } else {
-            doExit();
-        }
-    }
-
-    private void doExit() {
-        StageUtils.savePrimaryStageBound(stage);
-        Platform.exit();
-        System.exit(0);
-    }
-
-    public static Stage getStage() {
-        return stage;
-    }
-
-    public static void setStage(Stage stage) {
-        Main.stage = stage;
+        });
+        GUIState.setScene(scene);
+        Platform.runLater(() -> {
+            StageUtils.updateStageStyle(GUIState.getStage());
+        });
     }
 }
