@@ -14,12 +14,12 @@ import javax.annotation.PostConstruct;
 public class TestController {
 
     @PostConstruct
-    public void loadTest(){
+    public void loadTest() {
         System.out.println("load ************");
     }
 
     @RequestMapping("test")
-    public String testController(){
+    public String testController() {
         return "test.html";
     }
 
