@@ -2,20 +2,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.4.3</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <groupId>com.mutool</groupId>
+        <artifactId>mutool-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <groupId>com.mutool.core</groupId>
+
     <artifactId>mutool-core</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>mutool-core</name>
+    <name>${project.artifactId}</name>
     <description>mutool核心类库</description>
+
     <properties>
-        <java.version>1.8</java.version>
+
     </properties>
+
     <dependencies>
         <!-- dom解析 -->
         <dependency>
@@ -79,12 +80,12 @@
         </dependency>
 
         <!-- lombok消除冗长的 java代码 -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.6</version>
-            <!--<scope>provided</scope>-->
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <version>1.18.6</version>-->
+<!--            &lt;!&ndash;<scope>provided</scope>&ndash;&gt;-->
+<!--        </dependency>-->
 
         <!-- hutool 开发工具包 -->
         <dependency>
