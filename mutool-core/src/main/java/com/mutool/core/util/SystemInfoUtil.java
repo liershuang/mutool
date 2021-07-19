@@ -1,6 +1,7 @@
 package com.mutool.core.util;
 
-import lombok.extern.slf4j.Slf4j;
+import cn.hutool.log.Log;
+import cn.hutool.log.LogFactory;
 
 import java.util.Map;
 
@@ -11,8 +12,10 @@ import java.util.Map;
  * @date: 2018/1/31 15:09
  */
 
-@Slf4j
 public class SystemInfoUtil {
+
+    private static final Log log = LogFactory.get();
+
     /**
      * 获取Hosts文件路径
      */

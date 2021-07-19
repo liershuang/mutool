@@ -1,0 +1,17 @@
+# Spring Boot
+#server:
+#  port: 8067
+
+#spring:
+#  datasource:
+#    url: jdbc:h2:file:/Users/connie/h2/store
+#    driver-class-name: org.h2.Driver
+#    username: xiaomu
+#    password: xiaomu
+#  h2:
+#    console:
+#      enabled: true
+#      settings:
+#        trace: true
+#        web-allow-others: true
+

@@ -19,7 +19,7 @@
 
     <dependencies>
         <!-- dom解析 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>2.1.1</version>
@@ -28,30 +28,30 @@
             <groupId>jaxen</groupId>
             <artifactId>jaxen</artifactId>
             <version>1.2.0</version>
-        </dependency>
+        </dependency>-->
 
         <!-- quartz 调度任务包 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.3.1</version>
-        </dependency>
+        </dependency>-->
 
         <!-- javaFx开发工具包 -->
-        <dependency>
+        <!--<dependency>
             <groupId>org.controlsfx</groupId>
             <artifactId>controlsfx</artifactId>
             <version>8.40.16</version>
-        </dependency>
+        </dependency>-->
         <!-- jfoenix javaFx界面工具类 -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
             <version>8.0.9</version>
-        </dependency>
+        </dependency>-->
 
         <!-- commons 开发工具包 -->
-        <dependency>
+        <!--<dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.12</version>
@@ -70,7 +70,7 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-imaging</artifactId>
             <version>1.0-alpha1</version>
-        </dependency>
+        </dependency>-->
 
         <!-- okhttp3网络工具包 -->
         <dependency>
@@ -95,11 +95,11 @@
         </dependency>
 
         <!-- alibaba fastjson -->
-        <dependency>
+        <!--<dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.68</version>
-        </dependency>
+        </dependency>-->
 
         <!--yaml解析工具-->
         <dependency>

@@ -1,7 +1,6 @@
 package com.mutool.core.exception;
 
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 描述：<br>
@@ -26,13 +25,13 @@ public class BizException extends RuntimeException {
         super();
     }
 
-    public BizException(BaseErrorInfoInterface errorInfoInterface) {
+    public BizException(BaseError errorInfoInterface) {
         super(errorInfoInterface.getErrorMsg());
         this.errorCode = errorInfoInterface.getErrorCode();
         this.errorMsg = errorInfoInterface.getErrorMsg();
     }
 
-    public BizException(BaseErrorInfoInterface errorInfoInterface, Throwable cause) {
+    public BizException(BaseError errorInfoInterface, Throwable cause) {
         super(errorInfoInterface.getErrorMsg(), cause);
         this.errorCode = errorInfoInterface.getErrorCode();
         this.errorMsg = errorInfoInterface.getErrorMsg();

@@ -5,7 +5,7 @@ package com.mutool.core.exception;
  * 作者：les<br>
  * 日期：2020/11/27 10:28<br>
  */
-public enum ErrorCodeEnum implements BaseErrorInfoInterface {
+public enum ErrorCodeEnum implements BaseError {
 
     SUCCESS("200", "成功!"),
     BODY_NOT_MATCH("400", "请求的数据格式不符!"),

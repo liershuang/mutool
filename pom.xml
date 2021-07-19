@@ -65,6 +65,19 @@
 		</dependency>
 	</dependencies>
 
+	<!-- 部署到本地 -->
+	<distributionManagement>
+		<repository>
+			<id>mutool-maven</id>
+			<url>file:/Users/connie/code/pserson_space/maven/repository</url>
+		</repository>
+		<snapshotRepository>
+			<id>mutool-maven-snapshots</id>
+			<name>Snapshots repository</name>
+			<url>file:/Users/connie/code/pserson_space/maven/repository</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<issueManagement>
 		<system>Gitee Issue</system>
 		<url>https://gitee.com/liershuang/mutool/issues</url>
@@ -86,6 +99,14 @@
 				<configuration>
 					<source>${compile.version}</source>
 					<target>${compile.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>2.8.2</version>
+				<configuration>
+					<!--<skip>true</skip>-->
 				</configuration>
 			</plugin>
 		</plugins>
