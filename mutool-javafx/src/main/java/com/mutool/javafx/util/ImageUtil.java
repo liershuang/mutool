@@ -1,6 +1,6 @@
 package com.mutool.javafx.util;
 
-import com.mutool.commonweb.util.FileUtil;
+import com.mutool.core.util.FileUtil;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import lombok.Getter;

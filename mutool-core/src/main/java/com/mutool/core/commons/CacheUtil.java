@@ -1,4 +1,4 @@
-package com.mutool.commonweb.commons;
+package com.mutool.core.commons;
 
 import lombok.Getter;
 import lombok.Setter;

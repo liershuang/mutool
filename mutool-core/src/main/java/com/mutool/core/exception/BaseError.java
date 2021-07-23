@@ -1,4 +1,4 @@
-package com.mutool.commonweb.exception;
+package com.mutool.core.exception;
 
 /**
  * 描述：基础错误异常接口<br>

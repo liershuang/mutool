@@ -2,8 +2,8 @@ package com.mutool.commonweb.config;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mutool.commonweb.exception.BizException;
-import com.mutool.commonweb.exception.ResultBody;
+import com.mutool.core.exception.BizException;
+import com.mutool.core.exception.ResultBody;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;

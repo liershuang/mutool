@@ -1,4 +1,4 @@
-package com.mutool.commonweb.util;
+package com.mutool.core.util;
 
 import cn.hutool.core.util.StrUtil;
 import javafx.scene.Node;

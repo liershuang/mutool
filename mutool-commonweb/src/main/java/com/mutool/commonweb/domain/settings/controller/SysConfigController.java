@@ -5,7 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.mutool.commonweb.domain.settings.entity.SysConfig;
 import com.mutool.commonweb.domain.settings.entity.SysConfigGroup;
 import com.mutool.commonweb.domain.settings.service.ISysConfigService;
-import com.mutool.commonweb.exception.BizException;
+import com.mutool.core.exception.BizException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

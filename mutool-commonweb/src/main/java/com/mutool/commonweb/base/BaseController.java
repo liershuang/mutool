@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mutool.commonweb.common.IdEntity;
 import com.mutool.commonweb.enums.ErrorCodeEnum;
-import com.mutool.commonweb.exception.BizException;
+import com.mutool.core.exception.BizException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;

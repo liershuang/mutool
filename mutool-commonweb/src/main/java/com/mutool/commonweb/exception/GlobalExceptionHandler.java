@@ -1,5 +1,8 @@
 package com.mutool.commonweb.exception;
 
+import com.mutool.core.exception.BizException;
+import com.mutool.core.exception.ErrorCodeEnum;
+import com.mutool.core.exception.ResultBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;

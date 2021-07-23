@@ -1,4 +1,4 @@
-package com.mutool.commonweb.util;
+package com.mutool.core.util;
 
 import cn.hutool.log.Log;
 import cn.hutool.log.LogFactory;

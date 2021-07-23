@@ -1,4 +1,4 @@
-package com.mutool.commonweb.util.little;
+package com.mutool.core.util.little;
 
 import java.util.HashMap;
 import java.util.Map;

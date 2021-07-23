@@ -1,4 +1,4 @@
-package com.mutool.commonweb.exception;
+package com.mutool.core.exception;
 
 import lombok.Getter;
 

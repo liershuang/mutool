@@ -1,4 +1,4 @@
-package com.mutool.framework.config;
+package com.mutool.commonweb.config;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.context.annotation.Bean;

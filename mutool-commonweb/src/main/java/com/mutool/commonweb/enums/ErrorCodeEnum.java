@@ -1,6 +1,6 @@
 package com.mutool.commonweb.enums;
 
-import com.mutool.commonweb.exception.BaseError;
+import com.mutool.core.exception.BaseError;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.mutool.commonweb.util;
+package com.mutool.core.util;
 
 import java.util.ArrayList;
 import java.util.EnumSet;

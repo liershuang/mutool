@@ -1,4 +1,4 @@
-package com.mutool.framework.config;
+package com.mutool.commonweb.config;
 
 import org.springframework.boot.web.server.ConfigurableWebServerFactory;
 import org.springframework.boot.web.server.ErrorPage;

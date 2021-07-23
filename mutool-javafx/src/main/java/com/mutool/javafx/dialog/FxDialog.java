@@ -2,7 +2,7 @@ package com.mutool.javafx.dialog;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.ListUtil;
-import com.mutool.commonweb.exception.BizException;
+import com.mutool.core.exception.BizException;
 import com.mutool.javafx.FxApp;
 import com.mutool.javafx.util.FxmlUtil;
 import javafx.event.ActionEvent;
