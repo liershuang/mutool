@@ -33,7 +33,7 @@ public class DefaultEnvironmentPostProcessor implements EnvironmentPostProcessor
         if(!FileUtil.exist(mutoolPath)){
             FileUtil.mkdir(mutoolPath);
         }
-        String defaultDbPath = "jdbc:sqlite:"+mutoolPath+"data.db";
+        String defaultDbPath = "jdbc:sqlite:"+mutoolPath+"data.db?date_string_format=yyyy-MM-dd HH:mm:ss";
         for(Resource resource : configResource){
             Properties properties = PropertiesLoaderUtils.loadProperties(resource);
             //设置数据库默认连接地址

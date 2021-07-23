@@ -1,0 +1,78 @@
+# Spring Boot
+server:
+  port: 8066
+
+spring:
+  datasource:
+    #初始化模式，有三个值，always为始终执行初始化，embedded只初始化内存数据库（默认值）,如h2等，never为不执行初始化。
+    initialization-mode: always
+    #初始化ddl语句
+    schema: classpath*:db/schema.sql
+    #数据初始化dml语句，默认加载data.sql
+    data: classpath*:db/data.sql
+
+mybatis-plus:
+  configuration:
+    cache-enabled: false
+    default-executor-type: reuse
+    jdbc-type-for-null: 'null'
+    lazy-loading-enabled: true
+    local-cache-scope: session
+    map-underscore-to-camel-case: true
+    default-enum-type-handler: org.apache.ibatis.type.EnumTypeHandler
+  mapper-locations: classpath*:/mapper/**/*.xml
+  global-config:
+    db-config:
+      id-type: auto
+#      table-prefix: sys_
+      #逻辑删除配置
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      insert-strategy: not_null
+      update-strategy: not_null
+      select-strategy: not_empty
+    banner: false
+#    super-mapper-class: org.crown.framework.mapper.BaseMapper
+#  type-enums-package: org.crown.common.enums,org.crown.framework.enums
+  type-aliases-package: com.mutool.*.*.entity
+  type-handlers-package: org.crown.framework.mybatisplus.typehandler
+
+# 日志
+logging:
+  config: classpath:logback-spring.xml
+#  pattern:
+#    console: "%-5level - %msg%n"
+  level:
+    - root: debug
+
+#springboot项目监控
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+
+#spring:
+#  datasource:
+#    url: jdbc:h2:file:/Users/connie/h2/admin
+#    driver-class-name: org.h2.Driver
+#    username: xiaomu
+#    password: xiaomu
+#  h2:
+#    console:
+#      enabled: true
+#      settings:
+#        trace: true
+#        web-allow-others: true
+
+#spring:
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    driver-class-name: org.sqlite.JDBC
+#    # 方式一：  引用外部文件
+#    url: jdbc:sqlite:/Users/connie/sqlsite/store.db
+#    #方式二： 引用项目中的文件
+##    url: jdbc:sqlite::resource:static/sqlite/store.db
+#    username: xiaomu
+#    password: xiaomu

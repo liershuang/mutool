@@ -23,10 +23,12 @@
 	<modules>
 		<module>mutool-core</module>
 		<module>mutool-doc</module>
-		<module>mutool-javafx</module>
+<!--		<module>mutool-javafx</module>-->
 		<module>mutool-job</module>
 		<module>mutool-layui</module>
 		<module>mutool-mail</module>
+		<module>mutool-commonweb</module>
+		<module>mutool-framework</module>
 	</modules>
 
 	<properties>

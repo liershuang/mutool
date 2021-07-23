@@ -1,6 +1,6 @@
 package com.mutool.javafx.wrapper;
 
-import com.mutool.core.util.CssProps;
+import com.mutool.commonweb.util.CssProps;
 import javafx.scene.Node;
 
 /**

@@ -3,13 +3,12 @@ package com.mutool.javafx.util;
 import javafx.geometry.Rectangle2D;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import lombok.extern.slf4j.Slf4j;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-@Slf4j
+//@Slf4j
 public class JavaFxSystemUtil {
 
     /**
@@ -27,7 +26,8 @@ public class JavaFxSystemUtil {
         try {
             Desktop.getDesktop().open(new File(directoryPath));
         } catch (IOException e) {
-            log.error("打开目录异常：" + directoryPath, e);
+            //log.error("打开目录异常：" + directoryPath, e);
+            e.printStackTrace();
         }
     }
 

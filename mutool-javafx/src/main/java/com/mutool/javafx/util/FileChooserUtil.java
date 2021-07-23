@@ -1,6 +1,6 @@
 package com.mutool.javafx.util;
 
-import com.mutool.core.util.FileUtil;
+import com.mutool.commonweb.util.FileUtil;
 import com.mutool.javafx.helper.DropContentHelper;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;

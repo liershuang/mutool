@@ -1,8 +1,8 @@
 package com.mutool.javafx.util;
 
 
-import com.mutool.core.exception.BizException;
-import com.mutool.core.exception.ErrorCodeEnum;
+import com.mutool.commonweb.exception.BizException;
+import com.mutool.commonweb.exception.ErrorCodeEnum;
 import javafx.fxml.FXMLLoader;
 
 import java.io.IOException;

@@ -1,8 +1,8 @@
 package com.mutool.javafx.helper;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.mutool.core.util.EnumUtil;
-import com.mutool.core.util.KeyValue;
+import com.mutool.commonweb.util.EnumUtil;
+import com.mutool.commonweb.util.KeyValue;
 import javafx.scene.control.ChoiceBox;
 import javafx.util.StringConverter;
 

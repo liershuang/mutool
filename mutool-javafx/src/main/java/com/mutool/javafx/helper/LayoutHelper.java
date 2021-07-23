@@ -1,6 +1,6 @@
 package com.mutool.javafx.helper;
 
-import com.mutool.core.exception.BizException;
+import com.mutool.commonweb.exception.BizException;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
